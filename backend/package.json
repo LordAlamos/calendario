@@ -5,10 +5,9 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "postinstall": "npm install @types/multer @types/express @types/cors",
     "start": "node dist/server.js",
-    "migrate": "prisma migrate deploy",
-    "studio": "prisma studio"
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev --name init"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
