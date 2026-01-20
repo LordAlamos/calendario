@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: calendario-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: NODE_VERSION
+        value: 18
+
+  - type: pserv
+    name: calendario-db
+    env: postgresql
+    plan: free
+    diskSizeGB: 10
+   DatabaseURL:
+      fromService:
+        name: calendario-backend
+        property: DATABASE_URL

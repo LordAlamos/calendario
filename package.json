@@ -1,0 +1,17 @@
+{
+  "name": "calendario-equipe",
+  "version": "1.0.0",
+  "description": "Calendário da equipe para gerenciamento de agendas.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "Seu Nome <seuemail@dominio.com>",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.2",
+    "vite": "^5.4.21"
+  }
+}
