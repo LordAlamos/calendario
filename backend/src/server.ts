@@ -12,12 +12,13 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const app = express()
-const PORT = process.env.PORT || 3000
+// Usa a porta definida pelo Render ou 3000 localmente
+const PORT = parseInt(process.env.PORT || '3000', 10)
 
 // Middleware com limites aumentados para imagens
 app.use(cors())
 app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Servir arquivos estáticos com cabeçalhos corretos para imagens
 app.use('/uploads', express.static(uploadDir, {
