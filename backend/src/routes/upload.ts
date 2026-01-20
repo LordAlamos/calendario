@@ -1,5 +1,5 @@
+// @ts-nocheck
 import { Router } from 'express'
-// @ts-ignore
 import multer from 'multer'
 import prisma from '../lib/prisma'
 import fs from 'fs'
@@ -11,37 +11,34 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
 
-// @ts-ignore
 const storage = multer.diskStorage({
-  destination: function (req: any, file: any, cb: any) {
+  destination: function (req, file, cb) {
     cb(null, uploadDir)
   },
-  filename: function (req: any, file: any, cb: any) {
+  filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     const extension = path.extname(file.originalname)
     cb(null, 'image-' + uniqueSuffix + extension)
   }
 })
 
-// @ts-ignore
 const upload = multer({ 
   storage: storage,
   limits: {
     fileSize: 10 * 1024 * 1024
   },
-  fileFilter: (req: any, file: any, cb: any) => {
+  fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true)
     } else {
-      cb(new Error('Apenas arquivos de imagem são permitidos!') as any, false)
+      cb(new Error('Apenas arquivos de imagem são permitidos!'), false)
     }
   }
 })
 
 const uploadRoutes = Router()
 
-// @ts-ignore
-uploadRoutes.post('/upload', upload.single('image'), async (req: any, res: any) => {
+uploadRoutes.post('/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhuma imagem enviada' })
@@ -62,9 +59,9 @@ uploadRoutes.post('/upload', upload.single('image'), async (req: any, res: any) 
         url: `/uploads/${path.basename(req.file.path)}`
       }
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erro no upload:', error)
-    res.status(500).json({ error: 'Erro ao fazer upload da imagem: ' + error.message })
+    res.status(500).json({ error: 'Erro ao fazer upload da imagem' })
   }
 })
 

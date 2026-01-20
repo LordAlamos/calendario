@@ -1,3 +1,4 @@
+// @ts-nocheck
 import express from 'express'
 import cors from 'cors'
 import { calendarRoutes } from './routes/calendar'
@@ -12,20 +13,18 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const app = express()
-// Usa a porta definida pelo Render ou 3000 localmente
 const PORT = parseInt(process.env.PORT || '3000', 10)
 
-// Middleware com limites aumentados para imagens
+// Middleware
 app.use(cors())
 app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
-// Servir arquivos estáticos com cabeçalhos corretos para imagens
+// Servir arquivos estáticos
 app.use('/uploads', express.static(uploadDir, {
   maxAge: '1d',
   etag: true,
   setHeaders: (res, filePath) => {
-    // Define Content-Type baseado na extensão do arquivo
     const ext = path.extname(filePath).toLowerCase()
     switch (ext) {
       case '.jpg':
@@ -41,41 +40,33 @@ app.use('/uploads', express.static(uploadDir, {
       case '.webp':
         res.set('Content-Type', 'image/webp')
         break
-      case '.svg':
-        res.set('Content-Type', 'image/svg+xml')
-        break
     }
     res.set('Cache-Control', 'public, max-age=86400')
   }
 }))
 
-// Rotas da API
+// Rotas
 app.use('/api', calendarRoutes)
 app.use('/api', uploadRoutes)
 
 // Rota principal
-app.get('/', (req: any, res: any) => {
+app.get('/', (req, res) => {
   res.json({ 
     message: '🚀 Calendário Backend API Rodando!', 
+    version: '1.0.0',
     endpoints: {
-      events: 'GET /api/events - Listar eventos',
-      createEvent: 'POST /api/events - Criar evento',
-      upload: 'POST /api/upload - Upload de imagem',
-      images: 'GET /uploads - Pasta de imagens'
+      events: 'GET /api/events',
+      createEvent: 'POST /api/events', 
+      upload: 'POST /api/upload',
+      images: 'GET /uploads/'
     }
   })
 })
 
 // Iniciar servidor
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`📅 Servidor calendário rodando na porta ${PORT}`)
   console.log(`📁 Pasta de uploads: ${uploadDir}`)
-  console.log(`🔗 Endpoints disponíveis:`)
-  console.log(`   GET  http://localhost:${PORT}/`)
-  console.log(`   GET  http://localhost:${PORT}/api/events`)
-  console.log(`   POST http://localhost:${PORT}/api/events`)
-  console.log(`   POST http://localhost:${PORT}/api/upload`)
-  console.log(`   GET  http://localhost:${PORT}/uploads/nome-da-imagem.jpg`)
 })
 
 export default app

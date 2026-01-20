@@ -4,7 +4,8 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "npm install @types/multer @types/express @types/cors && tsc",
+    "build": "tsc",
+    "postinstall": "npm install @types/multer @types/express @types/cors",
     "start": "node dist/server.js",
     "migrate": "prisma migrate deploy",
     "studio": "prisma studio"
@@ -13,15 +14,15 @@
     "@prisma/client": "^5.10.0",
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "@types/multer": "^1.4.11",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17"
   },
   "devDependencies": {
     "prisma": "^5.10.0",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
-    "@types/node": "^20.11.4",
-    "@types/express": "^4.17.21",
-    "@types/cors": "^2.8.17",
-    "@types/multer": "^1.4.11"
+    "@types/node": "^20.11.4"
   }
 }
