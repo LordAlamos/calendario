@@ -22,7 +22,7 @@ let loadingQueue = new Set();
 let loadedMonths = new Set();
 
 // URL do backend
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://calendario-cu21.onrender.com';
 
 // Elementos do DOM
 let fileInput, mediaPreview, loadingIndicator, progressFill;
