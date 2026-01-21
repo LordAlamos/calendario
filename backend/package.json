@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "postinstall": "npx prisma generate"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
