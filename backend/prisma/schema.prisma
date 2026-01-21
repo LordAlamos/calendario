@@ -21,8 +21,10 @@ model CalendarEvent {
 model Image {
   id        String   @id @default(uuid())
   filename  String
+
   path      String
-  eventId   String?
+  eventId   String?-=
+  =
   event     CalendarEvent? @relation(fields: [eventId], references: [id])
   createdAt DateTime @default(now())
 }
