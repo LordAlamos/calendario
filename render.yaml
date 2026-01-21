@@ -3,8 +3,10 @@ services:
     name: calendario-backend
     env: node
     plan: free
-    buildCommand: npm install && npm run build
-    startCommand: npm run migrate:deploy && npm run start
+    buildCommand: npm install
+    startCommand: npm run start
     envVars:
+      - key: DATABASE_URL
+        value: postgresql://postgres:Lucky010220Kiana@db.hjaoqfvrrkqywxooevlb.supabase.co:5432/postgres
       - key: NODE_VERSION
         value: 18
