@@ -3,6 +3,10 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
+// Importar rotas
+const { calendarRoutes } = require('./routes/calendar');
+const { uploadRoutes } = require('./routes/upload');
+
 // Cria diretório de uploads se não existir
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -42,24 +46,21 @@ app.use('/uploads', express.static(uploadDir, {
   }
 }));
 
-// Rotas básicas para teste
+// Rotas da API
+app.use('/api', calendarRoutes);
+app.use('/api', uploadRoutes);
+
+// Rota principal
 app.get('/', (req, res) => {
   res.json({ 
     message: '🚀 Calendário Backend API Rodando!', 
-    version: '1.0.0',
     endpoints: {
       events: 'GET /api/events - Listar eventos',
-      health: 'GET / - Status da API'
+      createEvent: 'POST /api/events - Criar evento',
+      upload: 'POST /api/upload - Upload de imagem',
+      images: 'GET /uploads - Pasta de imagens'
     }
   });
-});
-
-app.get('/api/events', (req, res) => {
-  res.json([]);
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Iniciar servidor
@@ -69,7 +70,8 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🔗 Endpoints disponíveis:`);
   console.log(`   GET  http://localhost:${PORT}/`);
   console.log(`   GET  http://localhost:${PORT}/api/events`);
-  console.log(`   GET  http://localhost:${PORT}/api/health`);
+  console.log(`   POST http://localhost:${PORT}/api/events`);
+  console.log(`   POST http://localhost:${PORT}/api/upload`);
 });
 
 module.exports = app;
