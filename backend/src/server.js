@@ -22,8 +22,10 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ===== SERVIR FRONTEND =====
-// Corrigido: o frontend está na mesma pasta do backend
-app.use(express.static(path.join(__dirname, 'frontend')));
+// Caminho absoluto para o frontend
+const frontendPath = path.join(__dirname, '../../frontend');
+console.log('Procurando frontend em:', frontendPath);
+app.use(express.static(frontendPath));
 
 // ===== SERVIR UPLOADS =====
 app.use('/uploads', express.static(uploadDir, {
@@ -55,9 +57,8 @@ app.use('/api', calendarRoutes);
 app.use('/api', uploadRoutes);
 
 // ===== ROTA PARA SINGLE PAGE APPLICATION =====
-// Corrigido: o caminho completo para o index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Iniciar servidor
