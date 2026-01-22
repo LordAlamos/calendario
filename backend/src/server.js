@@ -1,3 +1,31 @@
+// ===== DIAGNÓSTICO =====
+console.log('=== DIAGNÓSTICO ===');
+console.log('__dirname:', __dirname);
+console.log('Conteúdo do diretório atual:');
+try {
+  console.log(fs.readdirSync(__dirname));
+} catch (err) {
+  console.log('Erro ao ler diretório atual:', err.message);
+}
+
+console.log('Conteúdo do diretório pai:');
+try {
+  console.log(fs.readdirSync(path.join(__dirname, '..')));
+} catch (err) {
+  console.log('Erro ao ler diretório pai:', err.message);
+}
+
+console.log('Procurando pasta frontend:');
+const diagFrontendPath = path.join(__dirname, 'frontend');
+console.log('diagFrontendPath:', diagFrontendPath);
+try {
+  console.log('Conteúdo da pasta frontend:', fs.readdirSync(diagFrontendPath));
+} catch (err) {
+  console.log('Erro ao ler diretório frontend:', err.message);
+}
+console.log('=== FIM DIAGNÓSTICO ===');
+// ===== FIM DIAGNÓSTICO =====
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
