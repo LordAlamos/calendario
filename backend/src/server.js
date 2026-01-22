@@ -21,7 +21,10 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Servir arquivos estáticos
+// ===== SERVIR FRONTEND =====
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+// ===== SERVIR UPLOADS =====
 app.use('/uploads', express.static(uploadDir, {
   maxAge: '1d',
   etag: true,
@@ -46,32 +49,20 @@ app.use('/uploads', express.static(uploadDir, {
   }
 }));
 
-// Rotas da API
+// ===== ROTAS DA API =====
 app.use('/api', calendarRoutes);
 app.use('/api', uploadRoutes);
 
-// Rota principal
-app.get('/', (req, res) => {
-  res.json({ 
-    message: '🚀 Calendário Backend API Rodando!', 
-    endpoints: {
-      events: 'GET /api/events - Listar eventos',
-      createEvent: 'POST /api/events - Criar evento',
-      upload: 'POST /api/upload - Upload de imagem',
-      images: 'GET /uploads - Pasta de imagens'
-    }
-  });
+// ===== ROTA PARA SINGLE PAGE APPLICATION =====
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`📅 Servidor calendário rodando na porta ${PORT}`);
   console.log(`📁 Pasta de uploads: ${uploadDir}`);
-  console.log(`🔗 Endpoints disponíveis:`);
-  console.log(`   GET  http://localhost:${PORT}/`);
-  console.log(`   GET  http://localhost:${PORT}/api/events`);
-  console.log(`   POST http://localhost:${PORT}/api/events`);
-  console.log(`   POST http://localhost:${PORT}/api/upload`);
+  console.log(`🔗 Acesse: https://calendario-cu21.onrender.com`);
 });
 
 module.exports = app;

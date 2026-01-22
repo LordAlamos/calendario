@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário da Equipe</title>
+    <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="nav-wrapper">
+                <button class="nav-button" onclick="changeMonth(-1)">‹</button>
+                <div class="month-display" id="current-month-year">Abril 2025</div>
+                <button class="nav-button" onclick="changeMonth(1)">›</button>
+            </div>
+        </div>
+
+        <div class="legend-status">
+            <div class="legend-item"><span class="dot" style="background:orange;"></span>Pendente</div>
+            <div class="legend-item"><span class="dot" style="background:green;"></span>Aprovado</div>
+            <div class="legend-item"><span class="dot" style="background:purple;"></span>Ajustado</div>
+            <div class="legend-item"><span class="dot" style="background:red;"></span>Ajustar</div>
+        </div>
+
+        <div class="days-container" id="days-container"></div>
+    </div>
+
+    <!-- Modal de Criação -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Novo Conteúdo</div>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Título:</label>
+                <input type="text" id="titulo" class="dropdown" placeholder="Digite o título...">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Data:</label>
+                    <input type="date" class="dropdown" id="input-date">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Formato:</label>
+                    <select class="dropdown" id="formato">
+                        <option>Estático</option>
+                        <option>Carrossel</option>
+                        <option>Reels</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status:</label>
+                    <select class="dropdown" id="status">
+                        <option class="status-pendente" value="pendente">Pendente</option>
+                        <option class="status-aprovado" value="aprovado">Aprovado</option>
+                        <option class="status-ajustado" value="ajustado">Ajustado</option>
+                        <option class="status-ajustar" value="ajustar">Ajustar</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mídia:</label>
+                <div class="media-upload" onclick="document.getElementById('file-input').click()">
+                    <div class="media-icon">+</div>
+                    <p>Clique para selecionar múltiplos arquivos</p>
+                </div>
+                <input type="file" id="file-input" style="display:none;" accept="image/*" multiple>
+                <div class="media-preview" id="media-preview"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Legenda:</label>
+                <textarea id="legenda" placeholder="Digite a legenda..."></textarea>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-save" onclick="saveChanges()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização -->
+    <div class="modal-overlay" id="view-modal">
+        <div class="view-modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Visualização de Conteúdo</div>
+                <button class="close-modal" onclick="closeViewModal()">×</button>
+            </div>
+
+            <div class="view-content-detail">
+                <div class="view-content-title" id="view-title">Título do Conteúdo</div>
+                
+                <div class="view-content-field">
+                    <div class="view-content-label">Status:</div>
+                    <div class="view-content-value" id="view-status">Pendente</div>
+                </div>
+                
+                <div class="view-content-field">
+                    <div class="view-content-label">Formato:</div>
+                    <div class="view-content-value" id="view-format">Estático</div>
+                </div>
+                
+                <div class="view-content-field">
+                    <div class="view-content-label">Mídias:</div>
+                    <div class="view-content-value">
+                        <div class="view-content-images-large" id="view-images"></div>
+                    </div>
+                </div>
+                
+                <div class="view-content-field">
+                    <div class="view-content-label">Legenda:</div>
+                    <div class="view-content-value" id="view-caption">Texto da legenda aqui...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Preview de Imagem -->
+    <div class="image-preview-modal" id="image-preview-modal">
+        <div class="image-preview-content">
+            <button class="close-image-preview" onclick="closeImagePreview()">×</button>
+            <img class="image-preview-img" id="preview-image" src="" alt="Preview">
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="confirm-modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirmar Exclusão</div>
+                <button class="close-modal" onclick="closeConfirmModal()">×</button>
+            </div>
+            
+            <p>Tem certeza que deseja excluir este conteúdo?</p>
+            <p>Esta ação não poderá ser desfeita.</p>
+            
+            <div class="confirm-buttons">
+                <button class="btn-confirm-cancel" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">
+        Salvando...
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+
+    <!-- incluir campos de formulário -->
+    <form id="formularioEvento">
+        <input type="text" id="tituloEvento" placeholder="Título do evento" required>
+        <input type="datetime-local" id="dataEvento" required>
+        <textarea id="descricaoEvento" placeholder="Descrição"></textarea>
+        <input type="file" id="imagemEvento" accept="image/*">
+        <button type="button" id="botaoSalvar">Salvar Evento</button>
+    </form>
+
+    <div id="listaEventos"></div>
+</body>
+</html>
