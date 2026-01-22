@@ -1,23 +1,25 @@
-// ===== DIAGNÓSTICO =====
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+
+// ===== DIAGNÓSTICO (depois dos imports) =====
 console.log('=== DIAGNÓSTICO ===');
 console.log('__dirname:', __dirname);
-console.log('Conteúdo do diretório atual:');
 try {
-  console.log(fs.readdirSync(__dirname));
+  console.log('Conteúdo do diretório atual:', fs.readdirSync(__dirname));
 } catch (err) {
   console.log('Erro ao ler diretório atual:', err.message);
 }
 
-console.log('Conteúdo do diretório pai:');
 try {
-  console.log(fs.readdirSync(path.join(__dirname, '..')));
+  console.log('Conteúdo do diretório pai:', fs.readdirSync(path.join(__dirname, '..')));
 } catch (err) {
   console.log('Erro ao ler diretório pai:', err.message);
 }
 
-console.log('Procurando pasta frontend:');
 const diagFrontendPath = path.join(__dirname, 'frontend');
-console.log('diagFrontendPath:', diagFrontendPath);
+console.log('Procurando pasta frontend em:', diagFrontendPath);
 try {
   console.log('Conteúdo da pasta frontend:', fs.readdirSync(diagFrontendPath));
 } catch (err) {
@@ -25,11 +27,6 @@ try {
 }
 console.log('=== FIM DIAGNÓSTICO ===');
 // ===== FIM DIAGNÓSTICO =====
-
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
 
 // Importar rotas
 const { calendarRoutes } = require('./routes/calendar');
@@ -50,10 +47,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ===== SERVIR FRONTEND =====
-// Caminho absoluto para o frontend
-const frontendPath = path.join(__dirname, '../../frontend');
-console.log('Procurando frontend em:', frontendPath);
-app.use(express.static(frontendPath));
+app.use(express.static(diagFrontendPath));
 
 // ===== SERVIR UPLOADS =====
 app.use('/uploads', express.static(uploadDir, {
@@ -86,7 +80,7 @@ app.use('/api', uploadRoutes);
 
 // ===== ROTA PARA SINGLE PAGE APPLICATION =====
 app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
+  res.sendFile(path.join(diagFrontendPath, 'index.html'));
 });
 
 // Iniciar servidor
