@@ -22,7 +22,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ===== SERVIR FRONTEND =====
-app.use(express.static(path.join(__dirname, 'backend/frontend')));
+// Corrigido: o frontend está na mesma pasta do backend
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // ===== SERVIR UPLOADS =====
 app.use('/uploads', express.static(uploadDir, {
@@ -54,15 +55,16 @@ app.use('/api', calendarRoutes);
 app.use('/api', uploadRoutes);
 
 // ===== ROTA PARA SINGLE PAGE APPLICATION =====
+// Corrigido: o caminho completo para o index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`📅 Servidor calendário rodando na porta ${PORT}`);
-  console.log(`📁 Pasta de uploads: ${uploadDir}`);
-  console.log(`🔗 Acesse: https://calendario-cu21.onrender.com`);
+  console.log('📅 Servidor calendário rodando na porta ' + PORT);
+  console.log('📁 Pasta de uploads: ' + uploadDir);
+  console.log('🔗 Acesse: https://calendario-cu21.onrender.com');
 });
 
 module.exports = app;
